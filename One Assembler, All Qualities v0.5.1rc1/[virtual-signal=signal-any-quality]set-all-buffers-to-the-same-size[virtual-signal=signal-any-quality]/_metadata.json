@@ -1,0 +1,11 @@
+{
+  "index": 1,
+  "blueprint_book": {
+    "item": "blueprint-book",
+    "label": "[virtual-signal=signal-any-quality]Set all Buffers to The Same Size[virtual-signal=signal-any-quality]",
+    "description": "Set the desired number of stacks to buffer and every quality buffer limit will be that many items. Perfect for buffering 1 stack of every quality.",
+    "active_index": 0,
+    "version": 562949955518464,
+    "icons": [{"index": 1, "signal": {"name": "buffer-chest", "quality": "uncommon"}}]
+  }
+}

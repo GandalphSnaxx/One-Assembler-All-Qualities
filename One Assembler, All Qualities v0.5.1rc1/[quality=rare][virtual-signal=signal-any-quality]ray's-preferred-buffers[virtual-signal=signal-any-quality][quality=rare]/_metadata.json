@@ -1,0 +1,11 @@
+{
+  "index": 3,
+  "blueprint_book": {
+    "item": "blueprint-book",
+    "label": "[quality=rare][virtual-signal=signal-any-quality]Ray's Preferred Buffers[virtual-signal=signal-any-quality][quality=rare]",
+    "description": "Set the number of [quality=normal]stacks to buffer. All other buffers are as follows:\n[quality=uncommon]- 1 stack\n[quality=rare]- 1/2[quality=normal]stacks\n[quality=epic]- 1/2[quality=rare]stacks\n[quality=legendary]- 1/2[quality=epic]stacks",
+    "active_index": 0,
+    "version": 562949955518464,
+    "icons": [{"index": 1, "signal": {"name": "buffer-chest", "quality": "epic"}}]
+  }
+}

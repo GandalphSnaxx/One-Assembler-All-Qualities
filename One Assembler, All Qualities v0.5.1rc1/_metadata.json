@@ -1,0 +1,15 @@
+{
+  "blueprint_book": {
+    "item": "blueprint-book",
+    "label": "[item=assembling-machine-3,quality=rare][item=electromagnetic-plant,quality=rare]Ray's One Assembler, All Qualities v0.5.1rc1[item=cryogenic-plant,quality=rare][item=foundry,quality=rare]",
+    "description": "These modules will request ingredients of every quality and when enough ingredients for a quality craft are ready, a quality product will be crafted! Buildings with 50% productivity will wait for enough ingredients for 2 crafts so the productivity is not wasted!",
+    "active_index": 1,
+    "version": 562949955518464,
+    "icons": [
+      {"index": 1, "signal": {"name": "assembling-machine-3"}},
+      {"index": 2, "signal": {"name": "assembling-machine-3", "quality": "uncommon"}},
+      {"index": 3, "signal": {"name": "assembling-machine-3", "quality": "rare"}},
+      {"index": 4, "signal": {"name": "assembling-machine-3", "quality": "epic"}}
+    ]
+  }
+}

@@ -1,0 +1,1949 @@
+{
+  "index": 5,
+  "blueprint": {
+    "item": "blueprint",
+    "label": "Foundry - DECREASING BUFFER",
+    "description": "The building not connected by wires can be deleted after the blueprint is placed!\nSet the item to craft and it will craft that item of every quality until each quality meets the desired buffer amount!",
+    "shift_x": 0,
+    "shift_y": 2,
+    "version": 562949955518464,
+    "entities": [
+      {
+        "name": "buffer-chest",
+        "control_behavior": {"circuit_condition_enabled": false},
+        "position": {"x": 1.5, "y": 0.5},
+        "request_filters": {
+          "trash_not_requested": true,
+          "sections": [
+            {
+              "index": 1,
+              "filters": [
+                {"name": "parameter-0", "comparator": "=", "count": 101, "index": 1, "quality": "normal"},
+                {"name": "parameter-0", "comparator": "=", "count": 102, "index": 2, "quality": "uncommon"},
+                {"name": "parameter-0", "comparator": "=", "count": 103, "index": 3, "quality": "rare"},
+                {"name": "parameter-0", "comparator": "=", "count": 104, "index": 4, "quality": "epic"},
+                {"name": "parameter-0", "comparator": "=", "count": 105, "index": 5, "quality": "legendary"}
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "bulk-inserter",
+        "direction": 4,
+        "filter_mode": "blacklist",
+        "use_filters": true,
+        "control_behavior": {"circuit_set_filters": true},
+        "position": {"x": 2.5, "y": 0.5}
+      },
+      {"name": "bulk-inserter", "direction": 12, "position": {"x": 2.5, "y": 1.5}},
+      {
+        "name": "constant-combinator",
+        "direction": 8,
+        "player_description": "Buffer limits, unlocked qualities, and buffer limits as stacks",
+        "control_behavior": {
+          "sections": {
+            "sections": [
+              {
+                "index": 1,
+                "filters": [
+                  {"name": "parameter-0", "comparator": "=", "count": 101, "index": 1, "quality": "normal"},
+                  {"name": "parameter-0", "comparator": "=", "count": 102, "index": 2, "quality": "uncommon"},
+                  {"name": "parameter-0", "comparator": "=", "count": 103, "index": 3, "quality": "rare"},
+                  {"name": "parameter-0", "comparator": "=", "count": 104, "index": 4, "quality": "epic"},
+                  {"name": "parameter-0", "comparator": "=", "count": 105, "index": 5, "quality": "legendary"}
+                ]
+              },
+              {
+                "group": "[virtual-signal=signal-any-quality]Unlocked Qualities[virtual-signal=signal-any-quality]",
+                "index": 2,
+                "multiplier": -1,
+                "filters": [
+                  {
+                    "name": "normal",
+                    "comparator": "=",
+                    "count": 1,
+                    "index": 1,
+                    "quality": "normal",
+                    "type": "quality"
+                  },
+                  {
+                    "name": "uncommon",
+                    "comparator": "=",
+                    "count": 1,
+                    "index": 2,
+                    "quality": "normal",
+                    "type": "quality"
+                  },
+                  {"name": "rare", "comparator": "=", "count": 1, "index": 3, "quality": "normal", "type": "quality"},
+                  {"name": "epic", "comparator": "=", "count": 0, "index": 4, "quality": "normal", "type": "quality"},
+                  {
+                    "name": "legendary",
+                    "comparator": "=",
+                    "count": 0,
+                    "index": 5,
+                    "quality": "normal",
+                    "type": "quality"
+                  }
+                ]
+              },
+              {
+                "index": 3,
+                "filters": [
+                  {
+                    "name": "signal-S",
+                    "comparator": "=",
+                    "count": 16,
+                    "index": 1,
+                    "quality": "normal",
+                    "type": "virtual"
+                  },
+                  {
+                    "name": "signal-S",
+                    "comparator": "=",
+                    "count": 8,
+                    "index": 2,
+                    "quality": "uncommon",
+                    "type": "virtual"
+                  },
+                  {
+                    "name": "signal-S",
+                    "comparator": "=",
+                    "count": 4,
+                    "index": 3,
+                    "quality": "rare",
+                    "type": "virtual"
+                  },
+                  {
+                    "name": "signal-S",
+                    "comparator": "=",
+                    "count": 2,
+                    "index": 4,
+                    "quality": "epic",
+                    "type": "virtual"
+                  },
+                  {
+                    "name": "signal-S",
+                    "comparator": "=",
+                    "count": 1,
+                    "index": 5,
+                    "quality": "legendary",
+                    "type": "virtual"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "position": {"x": 0.5, "y": 0.5}
+      },
+      {
+        "name": "decider-combinator",
+        "direction": 12,
+        "player_description": "[item=buffer-chest]Status Reader\nConverts buffer status to boolean states for the inserters and latches to use.\n[item=red-wire]in:\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Buffer maximums\n-[quality=normal]->[quality=legendary]Quality enable signals\n[item=green-wire]in:\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Buffered items\nOutputs:\n-[[item=parameter-0]-[item=parameter-0,quality=legendary]] Buffer data\n-[[quality=normal]-[quality=legendary]] Quality data",
+        "control_behavior": {
+          "decider_conditions": {
+            "conditions": [
+              {
+                "comparator": "≥",
+                "first_signal": {"name": "signal-each", "type": "virtual"},
+                "first_signal_networks": {"green": true, "red": false},
+                "second_signal": {"name": "signal-each", "type": "virtual"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": ">",
+                "compare_type": "and",
+                "first_signal": {"name": "signal-each", "type": "virtual"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "first_signal": {"name": "signal-each", "type": "virtual"},
+                "first_signal_networks": {"green": false, "red": true}
+              }
+            ],
+            "outputs": [{"copy_count_from_input": false, "signal": {"name": "signal-each", "type": "virtual"}}]
+          }
+        },
+        "position": {"x": 3, "y": 3.5}
+      },
+      {
+        "name": "decider-combinator",
+        "direction": 4,
+        "player_description": "[quality=legendary]Craft Request & Latch\n[item=red-wire]in: \n-[item=parameter-1,quality=legendary]->[item=parameter-6,quality=legendary]Ingredient counts\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Buffer status\n-[quality=normal]->[quality=legendary]Quality enable signals\n[item=green-wire]in:\n-[virtual-signal=signal-red]reset\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Craft requests\nOutput:\n-[item=parameter-0,quality=legendary]:1 - Latched request",
+        "control_behavior": {
+          "decider_conditions": {
+            "conditions": [
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "legendary"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "legendary"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "legendary"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "legendary"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "legendary"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "legendary"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": false, "red": true},
+                "second_signal": {"name": "legendary", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "constant": 10,
+                "first_signal": {"name": "signal-red", "type": "virtual"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": ">",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              }
+            ],
+            "outputs": [{"copy_count_from_input": false, "signal": {"name": "parameter-0", "quality": "legendary"}}]
+          }
+        },
+        "position": {"x": 5, "y": 3.5}
+      },
+      {
+        "name": "decider-combinator",
+        "player_description": "[quality=normal]Craft Request\nEnable when any enabled buffer is not full and no other request is present.\n[item=red-wire]in:\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Buffer status\n-[quality=normal]->[quality=legendary]Quality enable signals\n[item=green-wire]in:\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Craft requests\nOutput:\n-[item=parameter-0]:1 - Craft request",
+        "control_behavior": {
+          "decider_conditions": {
+            "conditions": [
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0"},
+                "first_signal_networks": {"green": false, "red": true},
+                "second_signal": {"name": "normal", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "uncommon"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "first_signal": {"name": "parameter-0", "quality": "uncommon"},
+                "second_signal": {"name": "uncommon", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "first_signal": {"name": "parameter-0", "quality": "uncommon"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "second_signal": {"name": "rare", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "first_signal": {"name": "parameter-0", "quality": "uncommon"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "second_signal": {"name": "epic", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "first_signal": {"name": "parameter-0", "quality": "uncommon"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "second_signal": {"name": "legendary", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              }
+            ],
+            "outputs": [{"copy_count_from_input": false, "signal": {"name": "parameter-0"}}]
+          }
+        },
+        "position": {"x": 2.5, "y": 5}
+      },
+      {
+        "name": "decider-combinator",
+        "player_description": "[quality=uncommon]Craft Request & Latch\n[item=red-wire]in: \n-[item=parameter-1,quality=uncommon]->[item=parameter-6,quality=uncommon]Ingredient counts\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Buffer status\n-[quality=normal]->[quality=legendary]Quality enable signals\n[item=green-wire]in:\n-[virtual-signal=signal-red]reset\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Craft requests\nOutput:\n-[item=parameter-0,quality=uncommon]:1 - Latched request",
+        "control_behavior": {
+          "decider_conditions": {
+            "conditions": [
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true},
+                "second_signal": {"name": "uncommon", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "second_signal": {"name": "rare", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "second_signal": {"name": "epic", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "uncommon"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "second_signal": {"name": "legendary", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "constant": 10,
+                "first_signal": {"name": "signal-red", "type": "virtual"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": ">",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "uncommon"},
+                "first_signal_networks": {"green": true, "red": false},
+                "second_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false},
+                "second_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false},
+                "second_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              }
+            ],
+            "outputs": [{"copy_count_from_input": false, "signal": {"name": "parameter-0", "quality": "uncommon"}}]
+          }
+        },
+        "position": {"x": 3.5, "y": 5}
+      },
+      {
+        "name": "decider-combinator",
+        "player_description": "[quality=rare]Craft Request & Latch\n[item=red-wire]in: \n-[item=parameter-1,quality=rare]->[item=parameter-6,quality=rare]Ingredient counts\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Buffer status\n-[quality=normal]->[quality=legendary]Quality enable signals\n[item=green-wire]in:\n-[virtual-signal=signal-red]reset\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Craft requests\nOutput:\n-[item=parameter-0,quality=rare]:1 - Latched request",
+        "control_behavior": {
+          "decider_conditions": {
+            "conditions": [
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true},
+                "second_signal": {"name": "rare", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "second_signal": {"name": "epic", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "rare"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "second_signal": {"name": "legendary", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "constant": 10,
+                "first_signal": {"name": "signal-red", "type": "virtual"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": ">",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "rare"},
+                "first_signal_networks": {"green": true, "red": false},
+                "second_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false},
+                "second_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              }
+            ],
+            "outputs": [{"copy_count_from_input": false, "signal": {"name": "parameter-0", "quality": "rare"}}]
+          }
+        },
+        "position": {"x": 4.5, "y": 5}
+      },
+      {
+        "name": "decider-combinator",
+        "player_description": "[quality=epic]Craft Request & Latch\n[item=red-wire]in: \n-[item=parameter-1,quality=epic]->[item=parameter-6,quality=epic]Ingredient counts\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Buffer status\n-[quality=normal]->[quality=legendary]Quality enable signals\n[item=green-wire]in:\n-[virtual-signal=signal-red]reset\n-[item=parameter-0]->[item=parameter-0,quality=legendary]Craft requests\nOutput:\n-[item=parameter-0,quality=epic]:1 - Latched request",
+        "control_behavior": {
+          "decider_conditions": {
+            "conditions": [
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true},
+                "second_signal": {"name": "epic", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "≥",
+                "constant": -11,
+                "first_signal": {"name": "parameter-1", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -12,
+                "first_signal": {"name": "parameter-2", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -13,
+                "first_signal": {"name": "parameter-3", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -14,
+                "first_signal": {"name": "parameter-4", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -15,
+                "first_signal": {"name": "parameter-5", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "comparator": "≥",
+                "compare_type": "and",
+                "constant": -16,
+                "first_signal": {"name": "parameter-6", "quality": "epic"},
+                "first_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "second_signal": {"name": "legendary", "type": "quality"},
+                "second_signal_networks": {"green": false, "red": true}
+              },
+              {
+                "constant": 10,
+                "first_signal": {"name": "signal-red", "type": "virtual"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": ">",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "epic"},
+                "first_signal_networks": {"green": true, "red": false}
+              },
+              {
+                "comparator": "=",
+                "compare_type": "and",
+                "first_signal": {"name": "parameter-0", "quality": "legendary"},
+                "first_signal_networks": {"green": true, "red": false}
+              }
+            ],
+            "outputs": [{"copy_count_from_input": false, "signal": {"name": "parameter-0", "quality": "epic"}}]
+          }
+        },
+        "position": {"x": 5.5, "y": 5}
+      },
+      {
+        "name": "fast-inserter",
+        "direction": 4,
+        "use_filters": true,
+        "control_behavior": {"circuit_set_filters": true},
+        "position": {"x": 2.5, "y": 2.5}
+      },
+      {
+        "name": "foundry",
+        "control_behavior": {
+          "read_recipe_finished": true,
+          "set_recipe": true,
+          "recipe_finished_signal": {"name": "signal-red", "type": "virtual"}
+        },
+        "items": [
+          {
+            "id": {"name": "quality-module-3"},
+            "items": {
+              "in_inventory": [
+                {"inventory": 4, "stack": 0},
+                {"inventory": 4, "stack": 1},
+                {"inventory": 4, "stack": 2},
+                {"inventory": 4, "stack": 3}
+              ]
+            }
+          }
+        ],
+        "position": {"x": 5.5, "y": 0.5}
+      },
+      {
+        "name": "recycler",
+        "mirror": true,
+        "items": [
+          {
+            "id": {"name": "quality-module-3"},
+            "items": {
+              "in_inventory": [
+                {"inventory": 4, "stack": 0},
+                {"inventory": 4, "stack": 1},
+                {"inventory": 4, "stack": 2},
+                {"inventory": 4, "stack": 3}
+              ]
+            }
+          }
+        ],
+        "position": {"x": 1, "y": 4}
+      },
+      {
+        "name": "requester-chest",
+        "control_behavior": {"circuit_condition_enabled": false},
+        "position": {"x": 1.5, "y": 1.5},
+        "request_filters": {
+          "request_from_buffers": true,
+          "trash_not_requested": true,
+          "sections": [
+            {
+              "index": 1,
+              "filters": [
+                {
+                  "name": "parameter-1",
+                  "comparator": "=",
+                  "count": 111,
+                  "index": 1,
+                  "max_count": 112,
+                  "quality": "normal"
+                },
+                {
+                  "name": "parameter-2",
+                  "comparator": "=",
+                  "count": 121,
+                  "index": 2,
+                  "max_count": 122,
+                  "quality": "normal"
+                },
+                {
+                  "name": "parameter-3",
+                  "comparator": "=",
+                  "count": 131,
+                  "index": 3,
+                  "max_count": 132,
+                  "quality": "normal"
+                },
+                {
+                  "name": "parameter-4",
+                  "comparator": "=",
+                  "count": 141,
+                  "index": 4,
+                  "max_count": 142,
+                  "quality": "normal"
+                },
+                {
+                  "name": "parameter-5",
+                  "comparator": "=",
+                  "count": 151,
+                  "index": 5,
+                  "max_count": 152,
+                  "quality": "normal"
+                },
+                {
+                  "name": "parameter-6",
+                  "comparator": "=",
+                  "count": 161,
+                  "index": 6,
+                  "max_count": 162,
+                  "quality": "normal"
+                }
+              ]
+            },
+            {
+              "index": 2,
+              "filters": [
+                {
+                  "name": "parameter-1",
+                  "comparator": "=",
+                  "count": 211,
+                  "index": 1,
+                  "max_count": 212,
+                  "quality": "uncommon"
+                },
+                {
+                  "name": "parameter-2",
+                  "comparator": "=",
+                  "count": 221,
+                  "index": 2,
+                  "max_count": 222,
+                  "quality": "uncommon"
+                },
+                {
+                  "name": "parameter-3",
+                  "comparator": "=",
+                  "count": 231,
+                  "index": 3,
+                  "max_count": 232,
+                  "quality": "uncommon"
+                },
+                {
+                  "name": "parameter-4",
+                  "comparator": "=",
+                  "count": 241,
+                  "index": 4,
+                  "max_count": 242,
+                  "quality": "uncommon"
+                },
+                {
+                  "name": "parameter-5",
+                  "comparator": "=",
+                  "count": 251,
+                  "index": 5,
+                  "max_count": 252,
+                  "quality": "uncommon"
+                },
+                {
+                  "name": "parameter-6",
+                  "comparator": "=",
+                  "count": 261,
+                  "index": 6,
+                  "max_count": 262,
+                  "quality": "uncommon"
+                }
+              ]
+            },
+            {
+              "index": 3,
+              "filters": [
+                {
+                  "name": "parameter-1",
+                  "comparator": "=",
+                  "count": 311,
+                  "index": 1,
+                  "max_count": 312,
+                  "quality": "rare"
+                },
+                {
+                  "name": "parameter-2",
+                  "comparator": "=",
+                  "count": 321,
+                  "index": 2,
+                  "max_count": 322,
+                  "quality": "rare"
+                },
+                {
+                  "name": "parameter-3",
+                  "comparator": "=",
+                  "count": 331,
+                  "index": 3,
+                  "max_count": 332,
+                  "quality": "rare"
+                },
+                {
+                  "name": "parameter-4",
+                  "comparator": "=",
+                  "count": 341,
+                  "index": 4,
+                  "max_count": 342,
+                  "quality": "rare"
+                },
+                {
+                  "name": "parameter-5",
+                  "comparator": "=",
+                  "count": 351,
+                  "index": 5,
+                  "max_count": 352,
+                  "quality": "rare"
+                },
+                {
+                  "name": "parameter-6",
+                  "comparator": "=",
+                  "count": 361,
+                  "index": 6,
+                  "max_count": 362,
+                  "quality": "rare"
+                }
+              ]
+            },
+            {
+              "index": 4,
+              "filters": [
+                {
+                  "name": "parameter-1",
+                  "comparator": "=",
+                  "count": 411,
+                  "index": 1,
+                  "max_count": 412,
+                  "quality": "epic"
+                },
+                {
+                  "name": "parameter-2",
+                  "comparator": "=",
+                  "count": 421,
+                  "index": 2,
+                  "max_count": 422,
+                  "quality": "epic"
+                },
+                {
+                  "name": "parameter-3",
+                  "comparator": "=",
+                  "count": 431,
+                  "index": 3,
+                  "max_count": 432,
+                  "quality": "epic"
+                },
+                {
+                  "name": "parameter-4",
+                  "comparator": "=",
+                  "count": 441,
+                  "index": 4,
+                  "max_count": 442,
+                  "quality": "epic"
+                },
+                {
+                  "name": "parameter-5",
+                  "comparator": "=",
+                  "count": 451,
+                  "index": 5,
+                  "max_count": 452,
+                  "quality": "epic"
+                },
+                {
+                  "name": "parameter-6",
+                  "comparator": "=",
+                  "count": 461,
+                  "index": 6,
+                  "max_count": 462,
+                  "quality": "epic"
+                }
+              ]
+            },
+            {
+              "index": 5,
+              "filters": [
+                {
+                  "name": "parameter-1",
+                  "comparator": "=",
+                  "count": 511,
+                  "index": 1,
+                  "max_count": 512,
+                  "quality": "legendary"
+                },
+                {
+                  "name": "parameter-2",
+                  "comparator": "=",
+                  "count": 521,
+                  "index": 2,
+                  "max_count": 522,
+                  "quality": "legendary"
+                },
+                {
+                  "name": "parameter-3",
+                  "comparator": "=",
+                  "count": 531,
+                  "index": 3,
+                  "max_count": 532,
+                  "quality": "legendary"
+                },
+                {
+                  "name": "parameter-4",
+                  "comparator": "=",
+                  "count": 541,
+                  "index": 4,
+                  "max_count": 542,
+                  "quality": "legendary"
+                },
+                {
+                  "name": "parameter-5",
+                  "comparator": "=",
+                  "count": 551,
+                  "index": 5,
+                  "max_count": 552,
+                  "quality": "legendary"
+                },
+                {
+                  "name": "parameter-6",
+                  "comparator": "=",
+                  "count": 561,
+                  "index": 6,
+                  "max_count": 562,
+                  "quality": "legendary"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "small-lamp",
+        "always_on": true,
+        "color": {"a": 1, "b": 1, "g": 1, "r": 0.49803921580314636},
+        "position": {"x": 0.5, "y": 1.5}
+      }
+    ],
+    "icons": [
+      {"index": 1, "signal": {"name": "foundry"}},
+      {"index": 2, "signal": {"name": "down-arrow", "type": "virtual"}}
+    ],
+    "parameters": [
+      {"name": "Craft:", "id": "parameter-0", "type": "id"},
+      {"name": "[quality=normal]Stacks:", "number": "16", "type": "number", "variable": "q1_bs"},
+      {
+        "name": "[quality=uncommon]Stacks:",
+        "dependent": true,
+        "formula": "max(1, q1_bs / 2)",
+        "number": "8",
+        "type": "number",
+        "variable": "q2_bs"
+      },
+      {
+        "name": "[quality=rare]Stacks:",
+        "dependent": true,
+        "formula": "max(1, q2_bs / 2)",
+        "number": "4",
+        "type": "number",
+        "variable": "q3_bs"
+      },
+      {
+        "name": "[quality=epic]Stacks:",
+        "dependent": true,
+        "formula": "max(1, q3_bs / 2)",
+        "number": "2",
+        "type": "number",
+        "variable": "q4_bs"
+      },
+      {
+        "name": "[quality=legendary]Stacks:",
+        "dependent": true,
+        "formula": "max(1, q4_bs / 2)",
+        "number": "1",
+        "type": "number",
+        "variable": "q5_bs"
+      },
+      {"name": "Ingredient 1", "id": "parameter-1", "ingredient-of": "parameter-0", "type": "id"},
+      {"name": "Ingredient 2", "id": "parameter-2", "ingredient-of": "parameter-0", "type": "id"},
+      {"name": "Ingredient 3", "id": "parameter-3", "ingredient-of": "parameter-0", "type": "id"},
+      {"name": "Ingredient 4", "id": "parameter-4", "ingredient-of": "parameter-0", "type": "id"},
+      {"name": "Ingredient 5", "id": "parameter-5", "ingredient-of": "parameter-0", "type": "id"},
+      {"name": "Ingredient 6", "id": "parameter-6", "ingredient-of": "parameter-0", "type": "id"},
+      {"name": "Stacks", "id": "signal-S", "type": "id"},
+      {"name": "Latch Reset", "id": "signal-red", "type": "id"},
+      {"name": "Enable[quality=normal]Crafting", "id": "normal", "type": "id"},
+      {"name": "Enable[quality=uncommon]Crafting", "id": "uncommon", "type": "id"},
+      {"name": "Enable[quality=rare]Crafting", "id": "rare", "type": "id"},
+      {"name": "Enable[quality=epic]Crafting", "id": "epic", "type": "id"},
+      {"name": "Enable[quality=legendary]Crafting", "id": "legendary", "type": "id"},
+      {"name": "Combinator description", "id": "red-wire", "type": "id"},
+      {"name": "Combinator description", "id": "green-wire", "type": "id"},
+      {"name": "Combinator description", "id": "buffer-chest", "type": "id"},
+      {"name": "0", "not-parametrised": true, "number": "0", "type": "number"},
+      {
+        "name": "Productivity Multiplier",
+        "dependent": true,
+        "formula": "2",
+        "number": "10",
+        "type": "number",
+        "variable": "prod_mult"
+      },
+      {
+        "name": "[item=parameter-1]/craft",
+        "dependent": true,
+        "formula": "prod_mult * p0_i1",
+        "number": "-11",
+        "type": "number",
+        "variable": "i1"
+      },
+      {
+        "name": "[item=parameter-2]/craft",
+        "dependent": true,
+        "formula": "prod_mult * p0_i2",
+        "number": "-12",
+        "type": "number",
+        "variable": "i2"
+      },
+      {
+        "name": "[item=parameter-3]/craft",
+        "dependent": true,
+        "formula": "prod_mult * p0_i3",
+        "number": "-13",
+        "type": "number",
+        "variable": "i3"
+      },
+      {
+        "name": "[item=parameter-4]/craft",
+        "dependent": true,
+        "formula": "prod_mult * p0_i4",
+        "number": "-14",
+        "type": "number",
+        "variable": "i4"
+      },
+      {
+        "name": "[item=parameter-5]/craft",
+        "dependent": true,
+        "formula": "prod_mult * p0_i5",
+        "number": "-15",
+        "type": "number",
+        "variable": "i5"
+      },
+      {
+        "name": "[item=parameter-6]/craft",
+        "dependent": true,
+        "formula": "prod_mult * p0_i6",
+        "number": "-16",
+        "type": "number",
+        "variable": "i6"
+      },
+      {
+        "name": "[item=parameter-0]Buffer Limit",
+        "dependent": true,
+        "formula": "p0_s * q1_bs",
+        "number": "101",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-0,quality=uncommon]Buffer Limit",
+        "dependent": true,
+        "formula": "p0_s * q2_bs",
+        "number": "102",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-0,quality=rare]Buffer Limit",
+        "dependent": true,
+        "formula": "p0_s * q3_bs",
+        "number": "103",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-0,quality=epic]Buffer Limit",
+        "dependent": true,
+        "formula": "p0_s * q4_bs",
+        "number": "104",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-0,quality=legendary]Buffer Limit",
+        "dependent": true,
+        "formula": "p0_s * q5_bs",
+        "number": "105",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-1]request min",
+        "dependent": true,
+        "formula": "max(min(p0_i1 * 120 / p0_t, p1_s * 2), i1)",
+        "number": "111",
+        "type": "number",
+        "variable": "i1_q1"
+      },
+      {
+        "name": "[item=parameter-2]request min",
+        "dependent": true,
+        "formula": "max(min(p0_i2 * 120 / p0_t, p2_s * 2), i2)",
+        "number": "121",
+        "type": "number",
+        "variable": "i2_q1"
+      },
+      {
+        "name": "[item=parameter-3]request min",
+        "dependent": true,
+        "formula": "max(min(p0_i3 * 120 / p0_t, p3_s * 2), i3)",
+        "number": "131",
+        "type": "number",
+        "variable": "i3_q1"
+      },
+      {
+        "name": "[item=parameter-4]request min",
+        "dependent": true,
+        "formula": "max(min(p0_i4 * 120 / p0_t, p4_s * 2), i4)",
+        "number": "141",
+        "type": "number",
+        "variable": "i4_q1"
+      },
+      {
+        "name": "[item=parameter-5]request min",
+        "dependent": true,
+        "formula": "max(min(p0_i5 * 120 / p0_t, p5_s * 2), i5)",
+        "number": "151",
+        "type": "number",
+        "variable": "i5_q1"
+      },
+      {
+        "name": "[item=parameter-6]request min",
+        "dependent": true,
+        "formula": "max(min(p0_i6 * 120 / p0_t, p6_s * 2), i6)",
+        "number": "161",
+        "type": "number",
+        "variable": "i6_q1"
+      },
+      {
+        "name": "[item=parameter-1]request max",
+        "dependent": true,
+        "formula": "2 * i1_q1",
+        "number": "112",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-2]request max",
+        "dependent": true,
+        "formula": "2 * i2_q1",
+        "number": "122",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-3]request max",
+        "dependent": true,
+        "formula": "2 * i3_q1",
+        "number": "132",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-4]request max",
+        "dependent": true,
+        "formula": "2 * i4_q1",
+        "number": "142",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-5]request max",
+        "dependent": true,
+        "formula": "2 * i5_q1",
+        "number": "152",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-6]request max",
+        "dependent": true,
+        "formula": "2 * i6_q1",
+        "number": "162",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-1,quality=uncommon]request min",
+        "dependent": true,
+        "formula": "max(i1_q1 / 2, i1)",
+        "number": "211",
+        "type": "number",
+        "variable": "i1_q2"
+      },
+      {
+        "name": "[item=parameter-2,quality=uncommon]request min",
+        "dependent": true,
+        "formula": "max(i2_q1 / 2, i2)",
+        "number": "221",
+        "type": "number",
+        "variable": "i2_q2"
+      },
+      {
+        "name": "[item=parameter-3,quality=uncommon]request min",
+        "dependent": true,
+        "formula": "max(i3_q1 / 2, i3)",
+        "number": "231",
+        "type": "number",
+        "variable": "i3_q2"
+      },
+      {
+        "name": "[item=parameter-4,quality=uncommon]request min",
+        "dependent": true,
+        "formula": "max(i4_q1 / 2, i4)",
+        "number": "241",
+        "type": "number",
+        "variable": "i4_q2"
+      },
+      {
+        "name": "[item=parameter-5,quality=uncommon]request min",
+        "dependent": true,
+        "formula": "max(i5_q1 / 2, i5)",
+        "number": "251",
+        "type": "number",
+        "variable": "i5_q2"
+      },
+      {
+        "name": "[item=parameter-6,quality=uncommon]request min",
+        "dependent": true,
+        "formula": "max(i6_q1 / 2, i6)",
+        "number": "261",
+        "type": "number",
+        "variable": "i6_q2"
+      },
+      {
+        "name": "[item=parameter-1,quality=uncommon]request max",
+        "dependent": true,
+        "formula": "2 * i1_q2",
+        "number": "212",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-2,quality=uncommon]request max",
+        "dependent": true,
+        "formula": "2 * i2_q2",
+        "number": "222",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-3,quality=uncommon]request max",
+        "dependent": true,
+        "formula": "2 * i3_q2",
+        "number": "232",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-4,quality=uncommon]request max",
+        "dependent": true,
+        "formula": "2 * i4_q2",
+        "number": "242",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-5,quality=uncommon]request max",
+        "dependent": true,
+        "formula": "2 * i5_q2",
+        "number": "252",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-6,quality=uncommon]request max",
+        "dependent": true,
+        "formula": "2 * i6_q2",
+        "number": "262",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-1,quality=rare]request min",
+        "dependent": true,
+        "formula": "max(i1_q2 / 2, i1)",
+        "number": "311",
+        "type": "number",
+        "variable": "i1_q3"
+      },
+      {
+        "name": "[item=parameter-2,quality=rare]request min",
+        "dependent": true,
+        "formula": "max(i2_q2 / 2, i2)",
+        "number": "321",
+        "type": "number",
+        "variable": "i2_q3"
+      },
+      {
+        "name": "[item=parameter-3,quality=rare]request min",
+        "dependent": true,
+        "formula": "max(i3_q2 / 2, i3)",
+        "number": "331",
+        "type": "number",
+        "variable": "i3_q3"
+      },
+      {
+        "name": "[item=parameter-4,quality=rare]request min",
+        "dependent": true,
+        "formula": "max(i4_q2 / 2, i4)",
+        "number": "341",
+        "type": "number",
+        "variable": "i4_q3"
+      },
+      {
+        "name": "[item=parameter-5,quality=rare]request min",
+        "dependent": true,
+        "formula": "max(i5_q2 / 2, i5)",
+        "number": "351",
+        "type": "number",
+        "variable": "i5_q3"
+      },
+      {
+        "name": "[item=parameter-6,quality=rare]request min",
+        "dependent": true,
+        "formula": "max(i6_q2 / 2, i6)",
+        "number": "361",
+        "type": "number",
+        "variable": "i6_q3"
+      },
+      {
+        "name": "[item=parameter-1,quality=rare]request max",
+        "dependent": true,
+        "formula": "2 * i1_q3",
+        "number": "312",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-2,quality=rare]request max",
+        "dependent": true,
+        "formula": "2 * i2_q3",
+        "number": "322",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-3,quality=rare]request max",
+        "dependent": true,
+        "formula": "2 * i3_q3",
+        "number": "332",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-4,quality=rare]request max",
+        "dependent": true,
+        "formula": "2 * i4_q3",
+        "number": "342",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-5,quality=rare]request max",
+        "dependent": true,
+        "formula": "2 * i5_q3",
+        "number": "352",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-6,quality=rare]request max",
+        "dependent": true,
+        "formula": "2 * i6_q3",
+        "number": "362",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-1,quality=epic]request min",
+        "dependent": true,
+        "formula": "max(i1_q3 / 2, i1)",
+        "number": "411",
+        "type": "number",
+        "variable": "i1_q4"
+      },
+      {
+        "name": "[item=parameter-2,quality=epic]request min",
+        "dependent": true,
+        "formula": "max(i2_q3 / 2, i2)",
+        "number": "421",
+        "type": "number",
+        "variable": "i2_q4"
+      },
+      {
+        "name": "[item=parameter-3,quality=epic]request min",
+        "dependent": true,
+        "formula": "max(i3_q3 / 2, i3)",
+        "number": "431",
+        "type": "number",
+        "variable": "i3_q4"
+      },
+      {
+        "name": "[item=parameter-4,quality=epic]request min",
+        "dependent": true,
+        "formula": "max(i4_q3 / 2, i4)",
+        "number": "441",
+        "type": "number",
+        "variable": "i4_q4"
+      },
+      {
+        "name": "[item=parameter-5,quality=epic]request min",
+        "dependent": true,
+        "formula": "max(i5_q3 / 2, i5)",
+        "number": "451",
+        "type": "number",
+        "variable": "i5_q4"
+      },
+      {
+        "name": "[item=parameter-6,quality=epic]request min",
+        "dependent": true,
+        "formula": "max(i6_q3 / 2, i6)",
+        "number": "461",
+        "type": "number",
+        "variable": "i6_q4"
+      },
+      {
+        "name": "[item=parameter-1,quality=epic]request max",
+        "dependent": true,
+        "formula": "2 * i1_q4",
+        "number": "412",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-2,quality=epic]request max",
+        "dependent": true,
+        "formula": "2 * i2_q4",
+        "number": "422",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-3,quality=epic]request max",
+        "dependent": true,
+        "formula": "2 * i3_q4",
+        "number": "432",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-4,quality=epic]request max",
+        "dependent": true,
+        "formula": "2 * i4_q4",
+        "number": "442",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-5,quality=epic]request max",
+        "dependent": true,
+        "formula": "2 * i5_q4",
+        "number": "452",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-6,quality=epic]request max",
+        "dependent": true,
+        "formula": "2 * i6_q4",
+        "number": "462",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-1,quality=legendary]request min",
+        "dependent": true,
+        "formula": "max(i1_q4 / 2, i1)",
+        "number": "511",
+        "type": "number",
+        "variable": "i1_q5"
+      },
+      {
+        "name": "[item=parameter-2,quality=legendary]request min",
+        "dependent": true,
+        "formula": "max(i2_q4 / 2, i2)",
+        "number": "521",
+        "type": "number",
+        "variable": "i2_q5"
+      },
+      {
+        "name": "[item=parameter-3,quality=legendary]request min",
+        "dependent": true,
+        "formula": "max(i3_q4 / 2, i3)",
+        "number": "531",
+        "type": "number",
+        "variable": "i3_q5"
+      },
+      {
+        "name": "[item=parameter-4,quality=legendary]request min",
+        "dependent": true,
+        "formula": "max(i4_q4 / 2, i4)",
+        "number": "541",
+        "type": "number",
+        "variable": "i4_q5"
+      },
+      {
+        "name": "[item=parameter-5,quality=legendary]request min",
+        "dependent": true,
+        "formula": "max(i5_q4 / 2, i5)",
+        "number": "551",
+        "type": "number",
+        "variable": "i5_q5"
+      },
+      {
+        "name": "[item=parameter-6,quality=legendary]request min",
+        "dependent": true,
+        "formula": "max(i6_q4 / 2, i6)",
+        "number": "561",
+        "type": "number",
+        "variable": "i6_q5"
+      },
+      {
+        "name": "[item=parameter-1,quality=legendary]request max",
+        "dependent": true,
+        "formula": "2 * i1_q5",
+        "number": "512",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-2,quality=legendary]request max",
+        "dependent": true,
+        "formula": "2 * i2_q5",
+        "number": "522",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-3,quality=legendary]request max",
+        "dependent": true,
+        "formula": "2 * i3_q5",
+        "number": "532",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-4,quality=legendary]request max",
+        "dependent": true,
+        "formula": "2 * i4_q5",
+        "number": "542",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-5,quality=legendary]request max",
+        "dependent": true,
+        "formula": "2 * i5_q5",
+        "number": "552",
+        "type": "number"
+      },
+      {
+        "name": "[item=parameter-6,quality=legendary]request max",
+        "dependent": true,
+        "formula": "2 * i6_q5",
+        "number": "562",
+        "type": "number"
+      }
+    ],
+    "snap-to-grid": {"x": 8, "y": 8},
+    "wires": [
+      ["0,0", 1, "2.5,3", 1],
+      ["2,0", 2, "2,2", 2],
+      ["1,1", 1, "2.5,3", 3],
+      ["1,0", 2, "2.5,3", 2],
+      ["5,0", 2, "4.5,3", 4],
+      ["2,2", 2, "2.5,3", 4],
+      ["2.5,3", 3, "2,4.5", 1],
+      ["4.5,3", 1, "4,4.5", 1],
+      ["4.5,3", 2, "4.5,3", 4],
+      ["4.5,3", 4, "5,4.5", 4],
+      ["2,4.5", 1, "3,4.5", 1],
+      ["2,4.5", 2, "2,4.5", 4],
+      ["2,4.5", 4, "3,4.5", 4],
+      ["4,4.5", 1, "3,4.5", 1],
+      ["4,4.5", 1, "5,4.5", 1],
+      ["4,4.5", 2, "4,4.5", 4],
+      ["4,4.5", 4, "3,4.5", 4],
+      ["4,4.5", 4, "5,4.5", 4],
+      ["3,4.5", 2, "3,4.5", 4],
+      ["5,4.5", 2, "5,4.5", 4]
+    ]
+  }
+}

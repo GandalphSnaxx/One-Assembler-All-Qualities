@@ -1,0 +1,11 @@
+{
+  "index": 5,
+  "blueprint_book": {
+    "item": "blueprint-book",
+    "label": "BACKUP[item=blueprint-book]",
+    "description": "ONLY COPY THIS BOOK",
+    "active_index": 0,
+    "version": 562949955518464,
+    "icons": [{"index": 1, "signal": {"name": "signal-deny", "type": "virtual"}}]
+  }
+}

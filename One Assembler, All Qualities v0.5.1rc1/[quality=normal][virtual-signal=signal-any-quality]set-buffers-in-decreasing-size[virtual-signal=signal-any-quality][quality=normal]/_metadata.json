@@ -1,0 +1,11 @@
+{
+  "index": 2,
+  "blueprint_book": {
+    "item": "blueprint-book",
+    "label": "[quality=normal][virtual-signal=signal-any-quality]Set Buffers In Decreasing Size[virtual-signal=signal-any-quality][quality=normal]",
+    "description": "Set the buffer size for normal quality products and each higher quality will have ~1/2 the buffer size. All buffers are at least 1 stack.",
+    "active_index": 0,
+    "version": 562949955518464,
+    "icons": [{"index": 1, "signal": {"name": "buffer-chest", "quality": "rare"}}]
+  }
+}

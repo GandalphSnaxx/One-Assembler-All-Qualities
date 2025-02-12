@@ -1,0 +1,11 @@
+{
+  "index": 0,
+  "blueprint_book": {
+    "item": "blueprint-book",
+    "label": "[quality=legendary][quality=epic][quality=rare][quality=uncommon][quality=normal]Set Each Quality Buffer[quality=normal][quality=uncommon][quality=rare][quality=epic][quality=legendary]",
+    "description": "Set the number of stacks to buffer for each quality.",
+    "active_index": 5,
+    "version": 562949955518464,
+    "icons": [{"index": 1, "signal": {"name": "buffer-chest"}}]
+  }
+}

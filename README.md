@@ -1,7 +1,8 @@
 # One-Assembler-All-Qualities
-A [Factorio](https://factorio.com/) blueprint book containing assemblers that can produce any and every quality items in a compact form factor. Module variations allow the user to specify the quantity of each or every item quality these modules should store. This repository was created with the help of [FaTul](https://github.com/nyurik/fatul#factorio-blueprint-git-tool-fatul)\
+A [Factorio](https://factorio.com/) blueprint book containing assemblers that can produce any and every quality items in a compact form factor. Module variations allow the user to specify the quantity of each or every item quality these modules should store. This repository was created with the help of [FaTul](https://github.com/nyurik/fatul#factorio-blueprint-git-tool-fatul)
+**Buildings with built in 50% productivit have their productivity accounted for! Get 3 products for the price of 2!**
+
 ![The one assembler that makes all the qualities.](/Images/assembler.jpg)
-Buildings with built in productivity is accounted for! Get 3 products for the price of 2!\
 
 ## Usage:
 
@@ -25,9 +26,9 @@ There are four main variants of this design: **Set Each Stack**, **Set Every Sta
     - Buffer limit example: 5 Normal Stacks, 0 Uncommon Stacks, 3 Rare Stacks, 1 Epic Stack, and 0 Legendary Stacks
 - **Set Every Stack**: Every product quality has the same buffer limit.
     - Buffer limit example: 2 Normal Stacks, 2 Uncommon Stacks, 2 Rare Stacks, 2 Epic Stack, and 2 Legendary Stacks
-- **Decreasing Stacks**: You set the buffer limit of normal quality products and each rarer quality has its buffer limit set to half the number of stacks of the previous rarity.\
+- **Decreasing Stacks**: You set the buffer limit of normal quality products and each rarer quality has its buffer limit set to half the number of stacks of the previous rarity.
     - Buffer limit example: 16 Normal Stacks, 8 Uncommon Stacks, 4 Rare Stacks, 2 Epic Stacks, and 1 Legendary Stack
-- **Ray's Preferred Stacks**: Similar to Decreasing Stacks, but uncommon items only get one stack buffered. Rare products get half the buffer size of normal.\
+- **Ray's Preferred Stacks**: Similar to Decreasing Stacks, but uncommon items only get one stack buffered. Rare products get half the buffer size of normal.
     - Buffer limit example: 16 Normal Stacks, 1 Uncommon Stack, 8 Rare Stacks, 4 Epic Stacks, and 2 Legendary Stacks
 
 ## Upgrading

@@ -1,5 +1,5 @@
 # One-Assembler-All-Qualities
-A [Factorio](https://factorio.com/) blueprint book containing assemblers that can produce any and every quality items in a compact form factor. Module variations allow the user to specify the quantity of each or every item quality these modules should store. This repository was created with the help of [FaTul](https://github.com/nyurik/fatul#factorio-blueprint-git-tool-fatul)
+A [Factorio](https://factorio.com/) blueprint book containing assemblers that can produce any and every quality items in a compact form factor. Module variations allow the user to specify the quantity of each or every item quality these modules should store. This repository was created with the help of [FaTul](https://github.com/nyurik/fatul#factorio-blueprint-git-tool-fatul)<br/>
 **Buildings with built in 50% productivit have their productivity accounted for! Get 3 products for the price of 2!**
 
 ![The one assembler that makes all the qualities.](/Images/assembler.jpg)
